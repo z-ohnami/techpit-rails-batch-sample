@@ -1,0 +1,1 @@
+# techpit-rails-batch-sample
