@@ -1,0 +1,9 @@
+CREATE USER IF NOT EXISTS batch_user IDENTIFIED BY 'batch';
+
+CREATE DATABASE IF NOT EXISTS batch_dev DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+
+GRANT ALL PRIVILEGES on batch_dev.* to batch_user;
+
+CREATE DATABASE IF NOT EXISTS batch_test DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+
+GRANT ALL PRIVILEGES on batch_test.* to batch_user;

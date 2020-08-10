@@ -1,0 +1,16 @@
+version: '2'
+services:
+  mariadb:
+    image: mariadb:10.4.12
+    volumes:
+      - ./tmp/mysql:/var/lib/mysql
+      - ./docker/mysql/mariadb.cnf:/etc/mysql/mariadb.cnf
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=batch
+      - MYSQL_DATABASE=batch_dev
+      - MYSQL_USER=batch_user
+      - MYSQL_PASSWORD=batch
+    command: --secure-file-priv=""
