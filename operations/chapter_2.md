@@ -34,5 +34,5 @@ bin/rails db:seed
 
 ```
 bin/rails -vT
-bin/rails ranks:update
+bin/rails ranks:chapter2:update
 ```
