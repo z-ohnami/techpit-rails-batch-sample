@@ -12,7 +12,7 @@ namespace :ranks do
 
       # ユーザーごとのスコア合計の降順に並べ替え、そこからランキング情報を再作成する
       user_total_scores.sort_by { |score| score[:total_score] * -1 }.each.with_index(1) do |total_score, index|
-        Rank.create(user_id: total_score[:user_id], rank: index)
+        Rank.create(user_id: total_score[:user_id], rank: index, score: total_score[:total_score])
       end
     end
   end
