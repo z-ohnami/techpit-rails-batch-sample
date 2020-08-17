@@ -28,3 +28,11 @@ bin/rails db:seed
 ```
 
 ## コーディング
+
+
+## バッチ処理の動作確認
+
+```
+bin/rails -vT
+bin/rails ranks:update
+```

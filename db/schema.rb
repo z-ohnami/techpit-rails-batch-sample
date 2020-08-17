@@ -13,14 +13,12 @@
 ActiveRecord::Schema.define(version: 2020_08_10_063355) do
 
   create_table "ranks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", comment: "ゲーム内のランキング情報", force: :cascade do |t|
-    t.string "year_month", null: false, comment: "ランキングの年月"
     t.bigint "user_id", null: false, comment: "ユーザー"
     t.integer "rank", default: 0, null: false, comment: "ユーザーの順位"
     t.datetime "created_at", precision: 6, default: -> { "current_timestamp(6)" }, null: false
     t.datetime "updated_at", precision: 6, default: -> { "current_timestamp(6)" }, null: false
     t.index ["rank"], name: "index_ranks_on_rank"
     t.index ["user_id"], name: "index_ranks_on_user_id"
-    t.index ["year_month", "user_id"], name: "index_ranks_on_year_month_and_user_id", unique: true
   end
 
   create_table "user_scores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", comment: "ユーザーがゲーム内で獲得した点数", force: :cascade do |t|
