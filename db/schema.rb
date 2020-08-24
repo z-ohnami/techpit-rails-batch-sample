@@ -10,18 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_10_063355) do
+ActiveRecord::Schema.define(version: 2020_08_21_022943) do
 
-  create_table "ranks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", comment: "ゲーム内のランキング情報", force: :cascade do |t|
+  create_table "ranks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", comment: "ゲーム内のランキング情報", force: :cascade do |t|
     t.bigint "user_id", null: false, comment: "ユーザー"
     t.integer "rank", default: 0, null: false, comment: "ユーザーの順位"
+    t.integer "score", default: 0, null: false, comment: "このランクに至ったスコア"
     t.datetime "created_at", precision: 6, default: -> { "current_timestamp(6)" }, null: false
     t.datetime "updated_at", precision: 6, default: -> { "current_timestamp(6)" }, null: false
     t.index ["rank"], name: "index_ranks_on_rank"
+    t.index ["score"], name: "index_ranks_on_score"
     t.index ["user_id"], name: "index_ranks_on_user_id"
   end
 
-  create_table "user_scores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", comment: "ユーザーがゲーム内で獲得した点数", force: :cascade do |t|
+  create_table "user_scores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", comment: "ユーザーがゲーム内で獲得した点数", force: :cascade do |t|
     t.bigint "user_id", null: false, comment: "ユーザー"
     t.integer "score", default: 0, null: false, comment: "ユーザーが獲得した点数"
     t.datetime "received_at", null: false, comment: "点数を獲得した日時"
@@ -31,7 +33,7 @@ ActiveRecord::Schema.define(version: 2020_08_10_063355) do
     t.index ["user_id"], name: "index_user_scores_on_user_id"
   end
 
-  create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", comment: "ゲームのユーザー情報を管理するテーブル", force: :cascade do |t|
+  create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", comment: "ゲームのユーザー情報を管理するテーブル", force: :cascade do |t|
     t.string "name", null: false, comment: "ユーザーの名前"
     t.datetime "created_at", precision: 6, default: -> { "current_timestamp(6)" }, null: false
     t.datetime "updated_at", precision: 6, default: -> { "current_timestamp(6)" }, null: false
