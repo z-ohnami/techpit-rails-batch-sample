@@ -45,4 +45,17 @@ namespace :ranks do
       puts "memsize_of_all #{ObjectSpace.memsize_of_all * 0.001 * 0.001} MB"
     end
   end
+
+  namespace :chapter5 do
+    desc 'chapter5 ゲーム内のユーザーランキング情報を更新する'
+    task update: :environment do
+      Benchmark.bm 10 do |r|
+        r.report 'RankUpdator' do
+          Chapter5::RanksUpdator.call
+        end
+      end
+
+      puts "memsize_of_all #{ObjectSpace.memsize_of_all * 0.001 * 0.001} MB"
+    end
+  end
 end

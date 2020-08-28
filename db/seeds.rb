@@ -40,13 +40,25 @@ User.delete_all
 # UserScore.create(user_id: user5.id, score: 3, received_at: Time.current)
 # UserScore.create(user_id: user5.id, score: 3, received_at: Time.current)
 
-# 第3章からはこちら
-USER_AMOUNT = 1_000
+# # 第3章からはこちら
+# USER_AMOUNT = 1_000
+#
+# 1.upto(USER_AMOUNT) do |i|
+#   user = User.create(name: "ゲーム太郎#{i}")
+#   # テストデータ ユーザーごとの得点
+#   1.upto(rand(10)) do
+#     UserScore.create(user_id: user.id, score: rand(1..100), received_at: Time.current)
+#   end
+# end
+
+# 第5章からはこちら
+# received_at のパターンを広げるように修正
+USER_AMOUNT = 5
 
 1.upto(USER_AMOUNT) do |i|
   user = User.create(name: "ゲーム太郎#{i}")
   # テストデータ ユーザーごとの得点
-  1.upto(rand(10)) do
-    UserScore.create(user_id: user.id, score: rand(1..100), received_at: Time.current)
+  1.upto(rand(30)) do
+    UserScore.create(user_id: user.id, score: rand(1..100), received_at: Time.current.ago(rand(0..60).days))
   end
 end
