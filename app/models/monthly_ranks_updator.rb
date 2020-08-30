@@ -14,7 +14,16 @@ class MonthlyRanksUpdator
     end
 
     Chapter5::RankOrderMaker.new(MonthlyRank).call do |score, rank|
-      MonthlyRank.where(score: score).update(rank: rank)
+      api_response = score_title_fetcher.call(score)
+      raise ActiveRecord::Rollback if api_response[:status] != 200
+
+      MonthlyRank.where(score: score).update(rank: rank, score_title: api_response[:title])
     end
+  end
+
+  private
+
+  def score_title_fetcher
+    @score_title_fetcher ||= ScoreTitleFetcher.new
   end
 end

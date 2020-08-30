@@ -17,11 +17,13 @@ RSpec.describe Chapter5::RanksUpdator, type: :model do
           create(:user_score, user: user1, score: 3, received_at: '2020-08-10 10:00:00')
           create(:user_score, user: user1, score: 2, received_at: '2020-08-01 10:00:00')
           create(:user_score, user: user1, score: 1, received_at: '2020-08-02 10:00:00')
-
-          Chapter5::RanksUpdator.call
         end
 
         it '各ranksテーブルにデータが作成される' do
+          VCR.use_cassette 'models/chapter5/ranks_updator/score_title_user1_200' do
+            Chapter5::RanksUpdator.call
+          end
+
           expect(MonthlyRank.count).to eq 1
 
           monthly_rank = MonthlyRank.first
@@ -56,7 +58,9 @@ RSpec.describe Chapter5::RanksUpdator, type: :model do
           create(:user_score, user: user3, score: 1, received_at: '2020-08-10 10:00:00')
           create(:user_score, user: user3, score: 1, received_at: '2020-08-10 10:00:00')
 
-          Chapter5::RanksUpdator.call
+          VCR.use_cassette ['models/chapter5/ranks_updator/score_title_user1_200', 'models/chapter5/ranks_updator/score_title_user2_200', 'models/chapter5/ranks_updator/score_title_user3_200'] do
+            Chapter5::RanksUpdator.call
+          end
         end
 
         it 'monthly_ranksテーブルにデータが作成される' do
@@ -66,14 +70,17 @@ RSpec.describe Chapter5::RanksUpdator, type: :model do
           expect(monthly_ranks[0].user_id).to eq user2.id
           expect(monthly_ranks[0].rank).to eq 1
           expect(monthly_ranks[0].score).to eq 17
+          expect(monthly_ranks[0].score_title).to eq '期待のルーキー'
 
           expect(monthly_ranks[1].user_id).to eq user1.id
           expect(monthly_ranks[1].rank).to eq 2
           expect(monthly_ranks[1].score).to eq 6
+          expect(monthly_ranks[1].score_title).to eq '期待のルーキー'
 
           expect(monthly_ranks[2].user_id).to eq user3.id
           expect(monthly_ranks[2].rank).to eq 3
           expect(monthly_ranks[2].score).to eq 3
+          expect(monthly_ranks[2].score_title).to eq '期待のルーキー'
         end
 
         it 'weekly_ranksテーブルにデータが作成される' do
@@ -117,7 +124,9 @@ RSpec.describe Chapter5::RanksUpdator, type: :model do
           create(:user)
           create(:user)
 
-          Chapter5::RanksUpdator.call
+          VCR.use_cassette ['models/chapter5/ranks_updator/score_title_user1_200', 'models/chapter5/ranks_updator/score_title_user2_200', 'models/chapter5/ranks_updator/score_title_user3_200'] do
+            Chapter5::RanksUpdator.call
+          end
         end
 
         it '各ranksテーブルは空である' do
@@ -129,7 +138,9 @@ RSpec.describe Chapter5::RanksUpdator, type: :model do
 
       context 'ユーザーが存在しない場合' do
         before do
-          Chapter5::RanksUpdator.call
+          VCR.use_cassette 'models/chapter5/ranks_updator/score_title_user1_200' do
+            Chapter5::RanksUpdator.call
+          end
         end
 
         it '各ranksテーブルは空である' do
@@ -143,14 +154,100 @@ RSpec.describe Chapter5::RanksUpdator, type: :model do
     # 既存のランキング情報がまだ存在していない場合
     include_examples 'ランキング情報更新処理の検証'
 
+    context 'APIの実行が途中で失敗した場合' do
+      before do
+        create(:user_score, user: user1, score: 3, received_at: '2020-08-10 10:00:00')
+        create(:user_score, user: user1, score: 2, received_at: '2020-08-01 10:00:00')
+        create(:user_score, user: user1, score: 1, received_at: '2020-08-02 10:00:00')
+
+        VCR.use_cassette 'models/chapter5/ranks_updator/score_title_user1_500' do
+          Chapter5::RanksUpdator.call
+        end
+      end
+
+      it '各ranksテーブルは更新されていない' do
+
+        expect(MonthlyRank.count).to eq 0
+        expect(WeeklyRank.count).to eq 0
+        expect(DailyRank.count).to eq 0
+      end
+    end
+
     context '過去のランキング情報が残っている場合' do
       before do
-        create(:monthly_rank, user: user1, rank: 3, score: 10)
-        create(:monthly_rank, user: user2, rank: 2, score: 20)
-        create(:monthly_rank, user: user3, rank: 1, score: 31)
+        create(:monthly_rank, user: user1, rank: 3, score: 10, score_title: '佳作')
+        create(:monthly_rank, user: user2, rank: 2, score: 20, score_title: '努力賞')
+        create(:monthly_rank, user: user3, rank: 1, score: 30, score_title: '優秀賞')
+
+        create(:weekly_rank, user: user1, rank: 3, score: 11)
+        create(:weekly_rank, user: user2, rank: 2, score: 22)
+        create(:weekly_rank, user: user3, rank: 1, score: 33)
+
+        create(:daily_rank, user: user1, rank: 3, score: 101)
+        create(:daily_rank, user: user2, rank: 2, score: 201)
+        create(:daily_rank, user: user3, rank: 1, score: 301)
       end
 
       include_examples 'ランキング情報更新処理の検証'
+
+      context 'APIの実行が途中で失敗した場合' do
+        before do
+          create(:user_score, user: user1, score: 3, received_at: '2020-08-10 10:00:00')
+          create(:user_score, user: user1, score: 2, received_at: '2020-08-01 10:00:00')
+          create(:user_score, user: user1, score: 1, received_at: '2020-08-02 10:00:00')
+
+          VCR.use_cassette 'models/chapter5/ranks_updator/score_title_user1_500' do
+            Chapter5::RanksUpdator.call
+          end
+        end
+
+        it '各ranksテーブルは更新前の状態で残っている' do
+          monthly_ranks = MonthlyRank.order(:rank)
+          expect(monthly_ranks.size).to eq 3
+          expect(monthly_ranks[0].user_id).to eq user3.id
+          expect(monthly_ranks[0].rank).to eq 1
+          expect(monthly_ranks[0].score).to eq 30
+          expect(monthly_ranks[0].score_title).to eq '優秀賞'
+
+          expect(monthly_ranks[1].user_id).to eq user2.id
+          expect(monthly_ranks[1].rank).to eq 2
+          expect(monthly_ranks[1].score).to eq 20
+          expect(monthly_ranks[1].score_title).to eq '努力賞'
+
+          expect(monthly_ranks[2].user_id).to eq user1.id
+          expect(monthly_ranks[2].rank).to eq 3
+          expect(monthly_ranks[2].score).to eq 10
+          expect(monthly_ranks[2].score_title).to eq '佳作'
+
+          weekly_ranks = WeeklyRank.order(:rank)
+          expect(weekly_ranks.size).to eq 3
+          expect(weekly_ranks[0].user_id).to eq user3.id
+          expect(weekly_ranks[0].rank).to eq 1
+          expect(weekly_ranks[0].score).to eq 33
+
+          expect(weekly_ranks[1].user_id).to eq user2.id
+          expect(weekly_ranks[1].rank).to eq 2
+          expect(weekly_ranks[1].score).to eq 22
+
+          expect(weekly_ranks[2].user_id).to eq user1.id
+          expect(weekly_ranks[2].rank).to eq 3
+          expect(weekly_ranks[2].score).to eq 11
+
+          daily_ranks = DailyRank.order(:rank)
+          expect(daily_ranks.size).to eq 3
+          expect(daily_ranks[0].user_id).to eq user3.id
+          expect(daily_ranks[0].rank).to eq 1
+          expect(daily_ranks[0].score).to eq 301
+
+          expect(daily_ranks[1].user_id).to eq user2.id
+          expect(daily_ranks[1].rank).to eq 2
+          expect(daily_ranks[1].score).to eq 201
+
+          expect(daily_ranks[2].user_id).to eq user1.id
+          expect(daily_ranks[2].rank).to eq 3
+          expect(daily_ranks[2].score).to eq 101
+        end
+      end
     end
   end
 end

@@ -18,7 +18,9 @@ RSpec.describe MonthlyRanksUpdator, type: :model do
           create(:user_score, user: user1, score: 2, received_at: '2020-08-01 10:00:00')
           create(:user_score, user: user1, score: 1, received_at: '2020-08-02 10:00:00')
 
-          MonthlyRanksUpdator.call
+          VCR.use_cassette 'models/monthly_ranks_updator/score_title_user1_200' do
+            MonthlyRanksUpdator.call
+          end
         end
 
         it 'ranksテーブルにデータが作成される' do
@@ -27,6 +29,20 @@ RSpec.describe MonthlyRanksUpdator, type: :model do
           rank = MonthlyRank.first
           expect(rank.rank).to eq 1
           expect(rank.score).to eq 6
+        end
+      end
+
+      context 'APIの実行が途中で失敗した場合' do
+        before do
+          create(:user_score, user: user1, score: 3, received_at: '2020-08-10 10:00:00')
+          create(:user_score, user: user1, score: 2, received_at: '2020-08-01 10:00:00')
+          create(:user_score, user: user1, score: 1, received_at: '2020-08-02 10:00:00')
+        end
+
+        it 'rollbackをするための例外が発生する' do
+          VCR.use_cassette 'models/monthly_ranks_updator/score_title_user1_500' do
+            expect { MonthlyRanksUpdator.call }.to raise_error(ActiveRecord::Rollback)
+          end
         end
       end
 
@@ -44,7 +60,9 @@ RSpec.describe MonthlyRanksUpdator, type: :model do
           create(:user_score, user: user3, score: 1, received_at: '2020-08-10 10:00:00')
           create(:user_score, user: user3, score: 1, received_at: '2020-08-10 10:00:00')
 
-          MonthlyRanksUpdator.call
+          VCR.use_cassette ['models/monthly_ranks_updator/score_title_user1_200', 'models/monthly_ranks_updator/score_title_user2_200', 'models/monthly_ranks_updator/score_title_user3_200'] do
+            MonthlyRanksUpdator.call
+          end
         end
 
         it 'monthly_ranksテーブルにデータが作成される' do
@@ -79,7 +97,9 @@ RSpec.describe MonthlyRanksUpdator, type: :model do
           create(:user_score, user: user3, score: 1, received_at: '2019-08-10 10:00:00')
           create(:user_score, user: user3, score: 1, received_at: '2019-08-10 10:00:00')
 
-          MonthlyRanksUpdator.call
+          VCR.use_cassette ['models/monthly_ranks_updator/score_title_user1_200', 'models/monthly_ranks_updator/score_title_user2_200', 'models/monthly_ranks_updator/score_title_user3_200'] do
+            MonthlyRanksUpdator.call
+          end
         end
 
         it 'monthly_ranksテーブルは空である' do
@@ -93,7 +113,9 @@ RSpec.describe MonthlyRanksUpdator, type: :model do
           create(:user)
           create(:user)
 
-          MonthlyRanksUpdator.call
+          VCR.use_cassette ['models/monthly_ranks_updator/score_title_user1_200', 'models/monthly_ranks_updator/score_title_user2_200', 'models/monthly_ranks_updator/score_title_user3_200'] do
+            MonthlyRanksUpdator.call
+          end
         end
 
         it 'monthly_ranksテーブルは空である' do
@@ -103,7 +125,9 @@ RSpec.describe MonthlyRanksUpdator, type: :model do
 
       context 'ユーザーが存在しない場合' do
         before do
-          MonthlyRanksUpdator.call
+          VCR.use_cassette 'models/monthly_ranks_updator/score_title_user1_200' do
+            MonthlyRanksUpdator.call
+          end
         end
 
         it 'monthly_ranksテーブルは空である' do

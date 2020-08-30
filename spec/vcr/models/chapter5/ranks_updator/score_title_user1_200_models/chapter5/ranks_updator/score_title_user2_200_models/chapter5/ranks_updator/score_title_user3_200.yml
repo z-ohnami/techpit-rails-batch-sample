@@ -1,0 +1,153 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:3000/dev/score_title?score=17
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v1.0.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"4971ef48c696cbd8e0baef3d0e77068c"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - eac81fad-d728-41f8-a66e-bbd8fbc8d909
+      X-Runtime:
+      - '0.003035'
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "score": 17,
+          "title": "期待のルーキー"
+        }
+  recorded_at: Tue, 11 Aug 2020 01:00:00 GMT
+- request:
+    method: get
+    uri: http://localhost:3000/dev/score_title?score=6
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v1.0.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"dd662b1a0aee8085f1f4cfc6572128ee"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - 9667cb66-487f-4080-a6f4-a6778f37a176
+      X-Runtime:
+      - '0.002503'
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "score": 6,
+          "title": "期待のルーキー"
+        }
+  recorded_at: Tue, 11 Aug 2020 01:00:00 GMT
+- request:
+    method: get
+    uri: http://localhost:3000/dev/score_title?score=3
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v1.0.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"87a13a57c878195fa8b6baf1bf1b84ba"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - 5ea0330b-9277-4acf-aac6-8367824c238a
+      X-Runtime:
+      - '0.002367'
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "score": 3,
+          "title": "期待のルーキー"
+        }
+  recorded_at: Tue, 11 Aug 2020 01:00:00 GMT
+recorded_with: VCR 6.0.0

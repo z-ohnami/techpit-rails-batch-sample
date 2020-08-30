@@ -9,6 +9,9 @@
 # 最初は各データをリセット
 # user_scoresはusersとcascadeの外部キーでつながっているため、usersを消した時点で一緒に消える
 Rank.delete_all
+MonthlyRank.delete_all
+WeeklyRank.delete_all
+DailyRank.delete_all
 User.delete_all
 
 # 第2章で使用。1件ずつデータを格納していくやり方
@@ -53,7 +56,7 @@ User.delete_all
 
 # 第5章からはこちら
 # received_at のパターンを広げるように修正
-USER_AMOUNT = 5
+USER_AMOUNT = 1_000
 
 1.upto(USER_AMOUNT) do |i|
   user = User.create(name: "ゲーム太郎#{i}")

@@ -46,4 +46,9 @@ Rails.application.configure do
 
   # Raises error for missing translations.
   # config.action_view.raise_on_missing_translations = true
+
+  # 称号サービスのAPIエンドポイント
+  # VCRをインストールした後に、一度localhostでテストを実行したらexample.comの方にして大丈夫です
+  config.api_endpoint = 'http://localhost:3000'
+  # config.api_endpoint = 'https://example.com'
 end
