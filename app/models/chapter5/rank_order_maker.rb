@@ -1,13 +1,21 @@
 module Chapter5
   class RankOrderMaker
-    def initialize(model_class)
-      @model_class = model_class
+    def each_ranked_user
+      rank = 1
+      previous_score = 0
+
+      ranked_users.each do |user|
+        rank += 1 if user.total_score < previous_score
+        yield(user, rank)
+        previous_score = user.total_score
+      end
     end
 
-    def call
-      @model_class.distinct(:score).order(score: :desc).pluck(:score).each.with_index(1) do |score, index|
-        yield(score, index)
-      end
+    private
+
+    def ranked_users
+      User.includes(:user_scores).all.select { |user| user.total_score.nonzero? }
+          .sort_by { |user| user.total_score * -1 }
     end
   end
 end

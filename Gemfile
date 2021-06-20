@@ -7,8 +7,6 @@ ruby '2.7.2'
 gem 'rails', '~> 6.0.3', '>= 6.0.3.2'
 gem 'mysql2'
 gem 'activerecord-import'
-gem 'faraday'
-gem 'whenever', require: false
 
 # Use Puma as the app server
 gem 'puma', '~> 4.1'
