@@ -6,16 +6,24 @@ namespace :ranks do
     desc 'chapter2 ゲーム内のユーザーランキング情報を更新する'
     task update: :environment do
       # 現在のランキング情報をリセット
-      Rank.all(&:destroy)
+      Rank.delete_all
 
-      # ユーザーごとに当月のスコア合計を計算する
+      # ユーザーごとにスコアの合計を計算する
       user_total_scores = User.all.map do |user|
         { user_id: user.id, total_score: user.user_scores.sum(&:score) }
       end
 
       # ユーザーごとのスコア合計の降順に並べ替え、そこからランキング情報を再作成する
-      user_total_scores.sort_by { |score| score[:total_score] * -1 }.each.with_index(1) do |total_score, index|
-        Rank.create(user_id: total_score[:user_id], rank: index, score: total_score[:total_score])
+      sorted_total_score_groups = user_total_scores
+                              .group_by { |score| score[:total_score] }
+                              .sort_by { |score, _| score * -1 }
+                              .to_h
+                              .values
+
+      sorted_total_score_groups.each.with_index(1) do |scores, index|
+        scores.each do |total_score|
+          Rank.create(user_id: total_score[:user_id], rank: index, score: total_score[:total_score])
+        end
       end
     end
   end
@@ -25,7 +33,7 @@ namespace :ranks do
     task update: :environment do
       Benchmark.bm 10 do |r|
         r.report 'RankUpdator' do
-          RanksUpdator.call
+          RanksUpdater.call
         end
       end
 

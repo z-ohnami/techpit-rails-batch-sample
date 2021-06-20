@@ -5,7 +5,7 @@ class CreateUserScores < ActiveRecord::Migration[6.0]
       t.integer :score, null: false, default: 0, comment: 'ユーザーが獲得した点数'
       t.datetime :received_at, null: false, index: true, comment: '点数を獲得した日時'
 
-      t.timestamps null: false, default: -> { 'NOW()' }
+      t.timestamps null: false
     end
   end
 end

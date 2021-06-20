@@ -58,7 +58,6 @@ RSpec.describe RankOrderMaker, type: :model do
         end
 
         expect(orders.size).to eq 3
-        expect(orders.size).to eq 3
         expect(orders[user3.id]).to eq 1
         expect(orders[user2.id]).to eq 2
         expect(orders[user1.id]).to eq 2
