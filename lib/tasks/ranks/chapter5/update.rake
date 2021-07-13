@@ -1,3 +1,5 @@
+require 'objspace'
+
 namespace :ranks do
   namespace :chapter5 do
     desc 'chapter5 ゲーム内のユーザーランキング情報を更新する'
